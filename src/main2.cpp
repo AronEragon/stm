@@ -3,7 +3,7 @@
 #include <libopencm3/stm32/timer.h>
 #include <libopencm3/cm3/nvic.h>
 
-// PA0 TIM5_CH1. AF2 PA8
+
 
 
 const uint32_t timer_peri = TIM1; // устройство таймер
@@ -23,7 +23,7 @@ int main(void)
     int period = 1000000/freq; // предварительная настройка масштабирования на 1 МГц
     timer_enable_preload(timer_peri); // заставляет счетчик загружаться из своего ARR только при следующем событии обновления
     timer_set_period(timer_peri, period); // установить период таймера в регистре автоперезагрузки (ARR) set the timer period in the (ARR) auto-reload register
-    timer_set_oc_value(timer_peri, oc_id, period * 1/4); // установить рабочий цикл 25%
+    timer_set_oc_value(timer_peri, oc_id, period * 1/2); // установить рабочий цикл 25%
     timer_set_counter(timer_peri, 0); // TIM_CNT
     
     timer_enable_oc_preload(timer_peri, oc_id);
