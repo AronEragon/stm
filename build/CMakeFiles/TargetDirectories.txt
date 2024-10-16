@@ -1,0 +1,8 @@
+/home/filin_vg/lab325/stm2/build/CMakeFiles/libopencm3_lib.dir
+/home/filin_vg/lab325/stm2/build/CMakeFiles/stm.dir
+/home/filin_vg/lab325/stm2/build/CMakeFiles/edit_cache.dir
+/home/filin_vg/lab325/stm2/build/CMakeFiles/rebuild_cache.dir
+/home/filin_vg/lab325/stm2/build/CMakeFiles/list_install_components.dir
+/home/filin_vg/lab325/stm2/build/CMakeFiles/install.dir
+/home/filin_vg/lab325/stm2/build/CMakeFiles/install/local.dir
+/home/filin_vg/lab325/stm2/build/CMakeFiles/install/strip.dir
