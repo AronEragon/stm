@@ -1,42 +1,110 @@
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/timer.h>
 #include <libopencm3/cm3/nvic.h>
+#include <libopencm3/stm32/timer.h>
 
+static void clock_setup(void)
+{
+/*rcc_clock_setup_hsi(&rcc_clock_setup_hsi[RCC_CLOCK_HSI_64MHZ]);*/
 
+/* Enable GPIOE clock. */
+rcc_periph_clock_enable(RCC_GPIOA);
 
+/* Enable TIM1 clock. */
+rcc_periph_clock_enable(RCC_TIM1);
+}
 
-const uint32_t timer_peri = TIM1; // устройство таймер
-const enum tim_oc_id oc_id = TIM_OC3; // указатель выходного канала сравнения
+static void timer1_setup(void)
+{
+/* Reset TIM1 peripheral. */
+rcc_periph_reset_pulse(RST_TIM1);
+
+/* Timer global mode:
+* - No divider
+* - Alignment edge
+* - Direction up
+*/
+timer_set_mode(TIM1, TIM_CR1_CKD_CK_INT,
+TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
+
+/* Reset prescaler value. */
+timer_set_prescaler(TIM1, 0);
+
+/* Reset repetition counter value. */
+timer_set_repetition_counter(TIM1, 0);
+
+/* Enable preload. */
+timer_enable_preload(TIM1);
+
+/* Continuous mode. */
+timer_continuous_mode(TIM1);
+
+/* Period (32kHz). */
+/* TIM1 uses a clock from APB2, see reg RCC_APB2ENR in STM32F407 RM */
+/* APB2 PREESC was set to 2, so APB2 timer clocks is */
+/* 2 x rcc_apb2_frequency, see clock tree in STM32F407 RM */
+timer_set_period(TIM1, rcc_apb2_frequency*2 / 32000);
+
+/* Configure break and deadtime. */
+timer_set_deadtime(TIM1, 10);
+timer_set_enabled_off_state_in_idle_mode(TIM1);
+timer_set_enabled_off_state_in_run_mode(TIM1);
+timer_disable_break(TIM1);
+timer_set_break_polarity_high(TIM1);
+timer_disable_break_automatic_output(TIM1);
+timer_set_break_lock(TIM1, TIM_BDTR_LOCK_OFF);
+
+/* -- OC3 configuration -- */
+/* Disable outputs. */
+timer_disable_oc_output(TIM1, TIM_OC3);
+timer_disable_oc_output(TIM1, TIM_OC3N);
+
+/* Configure global mode of line 3. */
+timer_disable_oc_clear(TIM1, TIM_OC3);
+timer_enable_oc_preload(TIM1, TIM_OC3);
+timer_set_oc_slow_mode(TIM1, TIM_OC3);
+timer_set_oc_mode(TIM1, TIM_OC3, TIM_OCM_PWM1);
+
+/* Configure OC3. */
+timer_set_oc_polarity_high(TIM1, TIM_OC3);
+timer_set_oc_idle_state_set(TIM1, TIM_OC3);
+
+/* Configure OC3N. */
+timer_set_oc_polarity_high(TIM1, TIM_OC3N);
+timer_set_oc_idle_state_set(TIM1, TIM_OC3N);
+
+/* Set the capture compare value for OC3. 50% duty */
+timer_set_oc_value(TIM1, TIM_OC3, rcc_apb2_frequency / 20000);
+
+/* Reenable outputs. */
+timer_enable_oc_output(TIM1, TIM_OC3);
+timer_enable_oc_output(TIM1, TIM_OC3N);
+
+/* ARR reload enable. */
+timer_enable_preload(TIM1);
+
+/* Enable outputs in the break subsystem. */
+timer_enable_break_main_output(TIM1);
+
+/* Counter enable. */
+timer_enable_counter(TIM1);
+}
+
+static void gpio_setup(void)
+{
+/* Set GPIOE12 and GPIO13 to 'output push-pull' and AF1 (TIM1_CH3N, TIM1_CH3). */
+gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO10);
+gpio_set_af(GPIOA, GPIO_AF6, GPIO10);
+gpio_set_output_options(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_100MHZ, GPIO10);
+}
 
 int main(void)
 {
+clock_setup();
+gpio_setup();
+timer1_setup();
 
-    // setup PA0 for PWM
-    rcc_periph_clock_enable(RCC_GPIOA);
-    rcc_periph_clock_enable(RCC_TIM1); // включить таймерные часы
-    gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO10); // pin PA10 Alt Function
-    gpio_set_af(GPIOA, GPIO_AF2, GPIO10);
+while (1);
 
-    int freq = 16000;
-    timer_set_prescaler(timer_peri, 16-1); // s/b 1MHz
-    int period = 1000000/freq; // предварительная настройка масштабирования на 1 МГц
-    timer_enable_preload(timer_peri); // заставляет счетчик загружаться из своего ARR только при следующем событии обновления
-    timer_set_period(timer_peri, period); // установить период таймера в регистре автоперезагрузки (ARR) set the timer period in the (ARR) auto-reload register
-    timer_set_oc_value(timer_peri, oc_id, period * 1/2); // установить рабочий цикл 25%
-    timer_set_counter(timer_peri, 0); // TIM_CNT
-    
-    timer_enable_oc_preload(timer_peri, oc_id);
-    timer_set_oc_mode(timer_peri, oc_id, TIM_OCM_PWM1); // выход активен, когда счетчик равен lt compare register
-    timer_enable_oc_output(timer_peri, oc_id); // включить таймер вывода сравнение
-    timer_continuous_mode(timer_peri); // включить непрерывную работу таймера
-    timer_generate_event(timer_peri, TIM_EGR_UG); // required!
-    timer_enable_counter(timer_peri);
-    //timer_enable_irq(timer_peri, TIM_DIER_COMIE);  //включить прерывание коммутации
-    //nvic_enable_irq(NVIC_TIM1_CC_IRQ);
-
-    // Для расширенных таймеров, таких как TIM1, необходимо дополнительно включить выход:
-    timer_enable_break_main_output(timer_peri);
-
-    while (1);
+return 0;
 }

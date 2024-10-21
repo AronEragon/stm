@@ -3,7 +3,7 @@
 #include <libopencm3/stm32/timer.h>
 #include <libopencm3/cm3/nvic.h>
 
-// PA0 TIM5_CH1. AF2 PA8
+// PA0 TIM5_CH1. AF2
 
 
 const uint32_t timer_peri = TIM1; // устройство таймер
