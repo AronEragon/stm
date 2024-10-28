@@ -52,5 +52,5 @@ set(CMAKE_MAKEFILE_PRODUCTS
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
   "CMakeFiles/libopencm3_lib.dir/DependInfo.cmake"
-  "CMakeFiles/stm.dir/DependInfo.cmake"
+  "CMakeFiles/zaharova.dir/DependInfo.cmake"
   )

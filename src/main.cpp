@@ -1,42 +1,79 @@
-#include <libopencm3/stm32/rcc.h>
-#include <libopencm3/stm32/gpio.h>
-#include <libopencm3/stm32/timer.h>
 #include <libopencm3/cm3/nvic.h>
+#include <libopencm3/stm32/adc.h>
+#include <libopencm3/stm32/dac.h>
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/stm32/rcc.h>
 
-// PA0 TIM5_CH1. AF2
+#define LED_DISCO_GREEN_PORT GPIOD
+#define LED_DISCO_GREEN_PIN GPIO12
 
+static void clock_setup(void)
+{
+rcc_clock_setup_pll(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
+/* Enable GPIOD clock for LED & USARTs. */
+rcc_periph_clock_enable(RCC_GPIOD);
+rcc_periph_clock_enable(RCC_GPIOA);
 
-const uint32_t timer_peri = TIM1; // устройство таймер
-const enum tim_oc_id oc_id = TIM_OC3; // указатель выходного канала сравнения
+/* Enable clocks for USART2 and dac */
+rcc_periph_clock_enable(RCC_USART2);
+rcc_periph_clock_enable(RCC_DAC);
+
+/* And ADC*/
+rcc_periph_clock_enable(RCC_ADC1);
+}
+
+static void adc_setup(void)
+{
+gpio_mode_setup(GPIOA, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO0);
+
+adc_power_off(ADC1);
+adc_disable_scan_mode(ADC1);
+adc_set_sample_time_on_all_channels(ADC1, ADC_SMPR_SMP_3CYC);
+
+adc_power_on(ADC1);
+}
+
+static void dac_setup(void)
+{
+gpio_mode_setup(GPIOA, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO5);
+dac_disable(DAC1, DAC_CHANNEL2);
+dac_disable_waveform_generation(DAC1, DAC_CHANNEL2);
+dac_enable(DAC1, DAC_CHANNEL2);
+dac_set_trigger_source(DAC1, DAC_CR_TSEL2_SW);
+}
+
+static uint16_t read_adc_naiive(uint8_t channel)
+{
+uint8_t channel_array[16];
+channel_array[0] = channel;
+adc_set_regular_sequence(ADC1, 1, channel_array);
+adc_start_conversion_regular(ADC1);
+while (!adc_eoc(ADC1));
+uint16_t reg16 = adc_read_regular(ADC1);
+return reg16;
+}
 
 int main(void)
 {
+    int i;
+clock_setup();
+adc_setup();
+dac_setup();
 
-    // setup PA0 for PWM
-    rcc_periph_clock_enable(RCC_GPIOA);
-    rcc_periph_clock_enable(RCC_TIM1); // включить таймерные часы
-    gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO10); // pin PA10 Alt Function
-    gpio_set_af(GPIOA, GPIO_AF2, GPIO10);
+/* green led for ticking */
+gpio_mode_setup(LED_DISCO_GREEN_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,
+			LED_DISCO_GREEN_PIN);
 
-    int freq = 16000;
-    timer_set_prescaler(timer_peri, 16-1); // s/b 1MHz
-    int period = 1000000/freq; // предварительная настройка масштабирования на 1 МГц
-    timer_enable_preload(timer_peri); // заставляет счетчик загружаться из своего ARR только при следующем событии обновления
-    timer_set_period(timer_peri, period); // установить период таймера в регистре автоперезагрузки (ARR) set the timer period in the (ARR) auto-reload register
-    timer_set_oc_value(timer_peri, oc_id, period * 1/4); // установить рабочий цикл 25%
-    timer_set_counter(timer_peri, 0); // TIM_CNT
-    
-    timer_enable_oc_preload(timer_peri, oc_id);
-    timer_set_oc_mode(timer_peri, oc_id, TIM_OCM_PWM1); // выход активен, когда счетчик равен lt compare register
-    timer_enable_oc_output(timer_peri, oc_id); // включить таймер вывода сравнение
-    timer_continuous_mode(timer_peri); // включить непрерывную работу таймера
-    timer_generate_event(timer_peri, TIM_EGR_UG); // required!
-    timer_enable_counter(timer_peri);
-    //timer_enable_irq(timer_peri, TIM_DIER_COMIE);  //включить прерывание коммутации
-    //nvic_enable_irq(NVIC_TIM1_CC_IRQ);
+while (1) {
+uint16_t input_adc0 = read_adc_naiive(0);
+dac_load_data_buffer_single(DAC1, input_adc0, DAC_ALIGN_RIGHT12, DAC_CHANNEL2);
+dac_software_trigger(DAC1, DAC_CHANNEL2);
+/* LED on/off */
+gpio_toggle(LED_DISCO_GREEN_PORT, LED_DISCO_GREEN_PIN);
 
-    // Для расширенных таймеров, таких как TIM1, необходимо дополнительно включить выход:
-    timer_enable_break_main_output(timer_peri);
-
-    while (1);
+for (i = 0; i < 1000000; i++) { /* Wait a bit. */
+__asm__("NOP");
+}
+}
+return 0;
 }

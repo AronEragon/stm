@@ -64,7 +64,7 @@ CMAKE_BINARY_DIR = /home/filin_vg/lab325/stm2/build
 
 # The main recursive "all" target.
 all: CMakeFiles/libopencm3_lib.dir/all
-all: CMakeFiles/stm.dir/all
+all: CMakeFiles/zaharova.dir/all
 .PHONY : all
 
 # The main recursive "preinstall" target.
@@ -73,7 +73,7 @@ preinstall:
 
 # The main recursive "clean" target.
 clean: CMakeFiles/libopencm3_lib.dir/clean
-clean: CMakeFiles/stm.dir/clean
+clean: CMakeFiles/zaharova.dir/clean
 .PHONY : clean
 
 #=============================================================================
@@ -103,30 +103,30 @@ CMakeFiles/libopencm3_lib.dir/clean:
 .PHONY : CMakeFiles/libopencm3_lib.dir/clean
 
 #=============================================================================
-# Target rules for target CMakeFiles/stm.dir
+# Target rules for target CMakeFiles/zaharova.dir
 
 # All Build rule for target.
-CMakeFiles/stm.dir/all: CMakeFiles/libopencm3_lib.dir/all
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/stm.dir/build.make CMakeFiles/stm.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/stm.dir/build.make CMakeFiles/stm.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/filin_vg/lab325/stm2/build/CMakeFiles --progress-num=1,2 "Built target stm"
-.PHONY : CMakeFiles/stm.dir/all
+CMakeFiles/zaharova.dir/all: CMakeFiles/libopencm3_lib.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/zaharova.dir/build.make CMakeFiles/zaharova.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/zaharova.dir/build.make CMakeFiles/zaharova.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/home/filin_vg/lab325/stm2/build/CMakeFiles --progress-num=1,2 "Built target zaharova"
+.PHONY : CMakeFiles/zaharova.dir/all
 
 # Build rule for subdir invocation for target.
-CMakeFiles/stm.dir/rule: cmake_check_build_system
+CMakeFiles/zaharova.dir/rule: cmake_check_build_system
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/filin_vg/lab325/stm2/build/CMakeFiles 2
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/stm.dir/all
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 CMakeFiles/zaharova.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /home/filin_vg/lab325/stm2/build/CMakeFiles 0
-.PHONY : CMakeFiles/stm.dir/rule
+.PHONY : CMakeFiles/zaharova.dir/rule
 
 # Convenience name for target.
-stm: CMakeFiles/stm.dir/rule
-.PHONY : stm
+zaharova: CMakeFiles/zaharova.dir/rule
+.PHONY : zaharova
 
 # clean rule for target.
-CMakeFiles/stm.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/stm.dir/build.make CMakeFiles/stm.dir/clean
-.PHONY : CMakeFiles/stm.dir/clean
+CMakeFiles/zaharova.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/zaharova.dir/build.make CMakeFiles/zaharova.dir/clean
+.PHONY : CMakeFiles/zaharova.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

@@ -170,7 +170,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=stm
+CMAKE_PROJECT_NAME:STATIC=zaharova
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/arm-none-eabi-ranlib
@@ -261,13 +261,13 @@ FETCHCONTENT_UPDATES_DISCONNECTED_LIBOPENCM3_REPO:BOOL=OFF
 GIT_EXECUTABLE:FILEPATH=/usr/bin/git
 
 //Value Computed by CMake
-stm_BINARY_DIR:STATIC=/home/filin_vg/lab325/stm2/build
+zaharova_BINARY_DIR:STATIC=/home/filin_vg/lab325/stm2/build
 
 //Value Computed by CMake
-stm_IS_TOP_LEVEL:STATIC=ON
+zaharova_IS_TOP_LEVEL:STATIC=ON
 
 //Value Computed by CMake
-stm_SOURCE_DIR:STATIC=/home/filin_vg/lab325/stm2
+zaharova_SOURCE_DIR:STATIC=/home/filin_vg/lab325/stm2
 
 
 ########################

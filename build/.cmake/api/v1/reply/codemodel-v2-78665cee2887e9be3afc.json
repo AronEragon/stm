@@ -7,7 +7,7 @@
 				{
 					"build" : ".",
 					"hasInstallRule" : true,
-					"jsonFile" : "directory-.-Debug-d0fe05a7679a453bfdd5.json",
+					"jsonFile" : "directory-.-Debug-7d6b387234dde5b590fb.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.20"
@@ -29,7 +29,7 @@
 					[
 						0
 					],
-					"name" : "stm",
+					"name" : "zaharova",
 					"targetIndexes" : 
 					[
 						0,
@@ -48,9 +48,9 @@
 				},
 				{
 					"directoryIndex" : 0,
-					"id" : "stm::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-stm-Debug-8624de2088856443e547.json",
-					"name" : "stm",
+					"id" : "zaharova::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-zaharova-Debug-9ae6adc73cb15d2d00d4.json",
+					"name" : "zaharova",
 					"projectIndex" : 0
 				}
 			]

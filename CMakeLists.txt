@@ -4,8 +4,8 @@ set(CMAKE_TOOLCHAIN_FILE cmake/arm-none-eabi-gcc.cmake)
 
 
 #================================================================================
-project(stm LANGUAGES CXX C ASM)
-set(DEVICE stm32f303vс) #stm32f407vg   stm32f303vс
+project(zaharova LANGUAGES CXX C ASM)
+set(DEVICE stm32f407vg) #stm32f303vc stm32f407vcg
 
 include(libopencm3)
 
@@ -13,8 +13,6 @@ include(libopencm3)
 #================================================================================
 add_executable(${PROJECT_NAME}
      src/main.cpp
-     
-     
 )
 
 target_link_libraries(${PROJECT_NAME}

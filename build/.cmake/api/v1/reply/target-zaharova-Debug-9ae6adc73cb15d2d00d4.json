@@ -2,7 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "stm"
+			"path" : "zaharova"
 		}
 	],
 	"backtrace" : 1,
@@ -82,7 +82,7 @@
 			{
 				"command" : 4,
 				"file" : 0,
-				"line" : 20,
+				"line" : 18,
 				"parent" : 0
 			},
 			{
@@ -112,7 +112,7 @@
 			{
 				"command" : 7,
 				"file" : 0,
-				"line" : 24,
+				"line" : 22,
 				"parent" : 0
 			}
 		]
@@ -229,7 +229,7 @@
 			"id" : "libopencm3_lib::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "stm::@6890427a1f51a3e7e1df",
+	"id" : "zaharova::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -310,8 +310,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "stm",
-	"nameOnDisk" : "stm",
+	"name" : "zaharova",
+	"nameOnDisk" : "zaharova",
 	"paths" : 
 	{
 		"build" : ".",

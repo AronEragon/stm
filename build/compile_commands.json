@@ -1,7 +1,7 @@
 [
 {
   "directory": "/home/filin_vg/lab325/stm2/build",
-  "command": "/usr/bin/arm-none-eabi-g++ -DSTM32F4 -DSTM32F4CCM -DSTM32F407VG -I/home/filin_vg/lab325/stm2/build/_deps/libopencm3_repo-src/include -g -ggdb3 -Os -fdata-sections -ffunction-sections -fno-common -fno-exceptions -Wall -Wextra -Wshadow -Wdouble-promotion -Wundef -Wconversion -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -std=c++17 -o CMakeFiles/stm.dir/src/main.cpp.obj -c /home/filin_vg/lab325/stm2/src/main.cpp",
+  "command": "/usr/bin/arm-none-eabi-g++ -DSTM32F4 -DSTM32F4CCM -DSTM32F407VG -I/home/filin_vg/lab325/stm2/build/_deps/libopencm3_repo-src/include -g -ggdb3 -Os -fdata-sections -ffunction-sections -fno-common -fno-exceptions -Wall -Wextra -Wshadow -Wdouble-promotion -Wundef -Wconversion -mcpu=cortex-m4 -mthumb -mfpu=fpv4-sp-d16 -mfloat-abi=hard -std=c++17 -o CMakeFiles/zaharova.dir/src/main.cpp.obj -c /home/filin_vg/lab325/stm2/src/main.cpp",
   "file": "/home/filin_vg/lab325/stm2/src/main.cpp"
 }
 ]

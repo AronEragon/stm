@@ -959,7 +959,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "stm"
+			"value" : "zaharova"
 		},
 		{
 			"name" : "CMAKE_RANLIB",
@@ -1342,7 +1342,7 @@
 			"value" : "/usr/bin/git"
 		},
 		{
-			"name" : "stm_BINARY_DIR",
+			"name" : "zaharova_BINARY_DIR",
 			"properties" : 
 			[
 				{
@@ -1354,7 +1354,7 @@
 			"value" : "/home/filin_vg/lab325/stm2/build"
 		},
 		{
-			"name" : "stm_IS_TOP_LEVEL",
+			"name" : "zaharova_IS_TOP_LEVEL",
 			"properties" : 
 			[
 				{
@@ -1366,7 +1366,7 @@
 			"value" : "ON"
 		},
 		{
-			"name" : "stm_SOURCE_DIR",
+			"name" : "zaharova_SOURCE_DIR",
 			"properties" : 
 			[
 				{

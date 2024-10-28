@@ -45,7 +45,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
                -f target/stm32f4x.cfg
                -c "init" 
                -c "reset halt"
-               -c "program /home/filin_vg/lab325/stm2/build/stm" 
+               -c "program /home/filin_vg/lab325/stm2/build/zaharova" 
                -c "reset"
                -c "shutdown"
      )

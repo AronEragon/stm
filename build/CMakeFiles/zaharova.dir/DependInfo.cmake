@@ -8,7 +8,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/filin_vg/lab325/stm2/src/main.cpp" "CMakeFiles/stm.dir/src/main.cpp.obj" "gcc" "CMakeFiles/stm.dir/src/main.cpp.obj.d"
+  "/home/filin_vg/lab325/stm2/src/main.cpp" "CMakeFiles/zaharova.dir/src/main.cpp.obj" "gcc" "CMakeFiles/zaharova.dir/src/main.cpp.obj.d"
   )
 
 # Targets to which this target links.
