@@ -1,79 +1,72 @@
-#include <libopencm3/cm3/nvic.h>
-#include <libopencm3/stm32/adc.h>
-#include <libopencm3/stm32/dac.h>
-#include <libopencm3/stm32/gpio.h>
 #include <libopencm3/stm32/rcc.h>
-
-#define LED_DISCO_GREEN_PORT GPIOD
-#define LED_DISCO_GREEN_PIN GPIO12
+#include <libopencm3/stm32/gpio.h>
+#include <libopencm3/cm3/nvic.h>
+#include <libopencm3/stm32/timer.h>
 
 static void clock_setup(void)
 {
-rcc_clock_setup_pll(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
-/* Enable GPIOD clock for LED & USARTs. */
-rcc_periph_clock_enable(RCC_GPIOD);
-rcc_periph_clock_enable(RCC_GPIOA);
 
-/* Enable clocks for USART2 and dac */
-rcc_periph_clock_enable(RCC_USART2);
-rcc_periph_clock_enable(RCC_DAC);
-
-/* And ADC*/
-rcc_periph_clock_enable(RCC_ADC1);
+	rcc_periph_clock_enable(RCC_GPIOA);
+	rcc_periph_clock_enable(RCC_TIM1);
 }
 
-static void adc_setup(void)
+//gdhghgdfh
+static void timer1_setup(void)
 {
-gpio_mode_setup(GPIOA, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO0);
+	rcc_periph_reset_pulse(RST_TIM1);
+	timer_set_mode(TIM1, TIM_CR1_CKD_CK_INT,
+			   TIM_CR1_CMS_EDGE, TIM_CR1_DIR_UP);
 
-adc_power_off(ADC1);
-adc_disable_scan_mode(ADC1);
-adc_set_sample_time_on_all_channels(ADC1, ADC_SMPR_SMP_3CYC);
+	timer_set_prescaler(TIM1, 0);
+	timer_set_repetition_counter(TIM1, 0);
+	timer_enable_preload(TIM1);
+	timer_continuous_mode(TIM1);
 
-adc_power_on(ADC1);
+	// Period (32kHz)
+	timer_set_period(TIM1, rcc_apb2_frequency*2 / 32000);
+
+	timer_set_deadtime(TIM1, 10);
+	timer_set_enabled_off_state_in_idle_mode(TIM1);
+	timer_set_enabled_off_state_in_run_mode(TIM1);
+	timer_disable_break(TIM1);
+	timer_set_break_polarity_high(TIM1);
+	timer_disable_break_automatic_output(TIM1);
+	timer_set_break_lock(TIM1, TIM_BDTR_LOCK_OFF);
+	timer_disable_oc_output(TIM1, TIM_OC3);
+	timer_disable_oc_output(TIM1, TIM_OC3N);
+	timer_disable_oc_clear(TIM1, TIM_OC3);
+	timer_enable_oc_preload(TIM1, TIM_OC3);
+	timer_set_oc_slow_mode(TIM1, TIM_OC3);
+	timer_set_oc_mode(TIM1, TIM_OC3, TIM_OCM_PWM1);
+	timer_set_oc_polarity_high(TIM1, TIM_OC3);
+	timer_set_oc_idle_state_set(TIM1, TIM_OC3);
+	timer_set_oc_polarity_high(TIM1, TIM_OC3N);
+	timer_set_oc_idle_state_set(TIM1, TIM_OC3N);
+
+	/* Set the capture compare value for OC3. 50% duty */
+	timer_set_oc_value(TIM1, TIM_OC3, rcc_apb2_frequency / 10000);
+
+	timer_enable_oc_output(TIM1, TIM_OC3);
+	timer_enable_oc_output(TIM1, TIM_OC3N);
+	timer_enable_preload(TIM1);
+	timer_enable_break_main_output(TIM1);
+	timer_enable_counter(TIM1);
 }
 
-static void dac_setup(void)
+static void gpio_setup(void)
 {
-gpio_mode_setup(GPIOA, GPIO_MODE_ANALOG, GPIO_PUPD_NONE, GPIO5);
-dac_disable(DAC1, DAC_CHANNEL2);
-dac_disable_waveform_generation(DAC1, DAC_CHANNEL2);
-dac_enable(DAC1, DAC_CHANNEL2);
-dac_set_trigger_source(DAC1, DAC_CR_TSEL2_SW);
-}
-
-static uint16_t read_adc_naiive(uint8_t channel)
-{
-uint8_t channel_array[16];
-channel_array[0] = channel;
-adc_set_regular_sequence(ADC1, 1, channel_array);
-adc_start_conversion_regular(ADC1);
-while (!adc_eoc(ADC1));
-uint16_t reg16 = adc_read_regular(ADC1);
-return reg16;
+	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO10);
+	gpio_set_af(GPIOA, GPIO_AF6, GPIO10);
+	gpio_set_output_options(GPIOA, GPIO_OTYPE_PP, GPIO_OSPEED_100MHZ, GPIO10);
 }
 
 int main(void)
 {
-    int i;
-clock_setup();
-adc_setup();
-dac_setup();
+	clock_setup();
+	gpio_setup();
+	timer1_setup();
 
-/* green led for ticking */
-gpio_mode_setup(LED_DISCO_GREEN_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE,
-			LED_DISCO_GREEN_PIN);
+	while (1);
 
-while (1) {
-uint16_t input_adc0 = read_adc_naiive(0);
-dac_load_data_buffer_single(DAC1, input_adc0, DAC_ALIGN_RIGHT12, DAC_CHANNEL2);
-dac_software_trigger(DAC1, DAC_CHANNEL2);
-/* LED on/off */
-gpio_toggle(LED_DISCO_GREEN_PORT, LED_DISCO_GREEN_PIN);
-
-for (i = 0; i < 1000000; i++) { /* Wait a bit. */
-__asm__("NOP");
-}
-}
-return 0;
+	return 0;
 }
