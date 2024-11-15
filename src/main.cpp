@@ -23,15 +23,17 @@ static void timer1_setup(void)
 	timer_continuous_mode(TIM1);
 
 	// Period (32kHz)
-	timer_set_period(TIM1, rcc_apb2_frequency*2 / 32000);
+	timer_set_period(TIM1, rcc_apb2_frequency*2 / 32000);// Устанавливает период таймера на значение, пропорциональное частоте шины, с делением на 32000, что будет соответствовать 32 кГц.
 
 	timer_set_deadtime(TIM1, 10);
 	timer_set_enabled_off_state_in_idle_mode(TIM1);
 	timer_set_enabled_off_state_in_run_mode(TIM1);
+
 	timer_disable_break(TIM1);
 	timer_set_break_polarity_high(TIM1);
 	timer_disable_break_automatic_output(TIM1);
 	timer_set_break_lock(TIM1, TIM_BDTR_LOCK_OFF);
+
 	timer_disable_oc_output(TIM1, TIM_OC3);
 	timer_disable_oc_output(TIM1, TIM_OC3N);
 	timer_disable_oc_clear(TIM1, TIM_OC3);
@@ -42,17 +44,17 @@ static void timer1_setup(void)
 	timer_set_oc_idle_state_set(TIM1, TIM_OC3);
 	timer_set_oc_polarity_high(TIM1, TIM_OC3N);
 	timer_set_oc_idle_state_set(TIM1, TIM_OC3N);
-
+// Здесь настраивается третий выход (OC3) таймера для работы в режиме ШИМ (широтно-импульсной модуляции) с 50%-ной скважностью.
 	/* Set the capture compare value for OC3. 50% duty */
 	timer_set_oc_value(TIM1, TIM_OC3, rcc_apb2_frequency / 10000);
-
+// timer_set_oc_value(TIM1, TIM_OC3, (rcc_apb2_frequency * 2 / 32000) * 0.75); для 75% скважности например
 	timer_enable_oc_output(TIM1, TIM_OC3);
 	timer_enable_oc_output(TIM1, TIM_OC3N);
 	timer_enable_preload(TIM1);
 	timer_enable_break_main_output(TIM1);
 	timer_enable_counter(TIM1);
 }
-
+//Здесь настраивается GPIO-пин PA10 для работы в альтернативном режиме (например, для выхода ШИМ), устанавливаются параметры подтяжки и скорость выходного сигнала.
 static void gpio_setup(void)
 {
 	gpio_mode_setup(GPIOA, GPIO_MODE_AF, GPIO_PUPD_NONE, GPIO10);
@@ -70,3 +72,7 @@ int main(void)
 
 	return 0;
 }
+/*
+### Общая идея кода
+Код настраивает таймер на STM32 для генерации сигнала с широтно-импульсной модуляцией (PWM) с заданными параметрами. Этот сигнал может использоваться для управления, например, мощностью мотора или яркостью LED. GPIO настраивается для выводного сигнала. В main происходит инициализация различных настроек и запуск программного цикла. 
+*/
